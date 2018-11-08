@@ -218,13 +218,8 @@ import org.apache.hadoop.hive.serde2.NullStructSerDe;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.serde2.SerDeUtils;
 import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
-import org.apache.hadoop.hive.serde2.objectinspector.ConstantObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
-import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorFactory;
-import org.apache.hadoop.hive.serde2.objectinspector.StandardStructObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.StructField;
-import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
 import org.apache.hadoop.hive.serde2.thrift.ThriftJDBCBinarySerDe;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
@@ -11266,6 +11261,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
     LOG.info("AXE INFO: Before translate to target execution engin");
+    showTableScanOperators();
+    showAllOperator();
     // 9. Optimize Physical op tree & Translate to tarfget execution engine (MR,
     // TEZ..)
     if (!ctx.getExplainLogical()) {
@@ -11287,6 +11284,59 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
     return;
+  }
+
+  void showTableScanOperator(TableScanOperator op) {
+    LOG.info("AXE INFO: " + op.getConf().toString());
+  }
+
+  private void showTableScanOperators() {
+    for(Map.Entry<String, TableScanOperator> entry: topOps.entrySet()) {
+      showTableScanOperator(entry.getValue());
+    }
+
+  }
+
+  Operator<? extends OperatorDesc> findSink(Operator<? extends  OperatorDesc> topOp) {
+    Queue<Operator<? extends  OperatorDesc>> queue = new LinkedList<>();
+    Set<Operator<? extends OperatorDesc>> set = new HashSet<>();
+    queue.add(topOp);
+    set.add(topOp);
+    while(!queue.isEmpty()) {
+      Operator<? extends OperatorDesc> op = queue.remove();
+      if(op.getChildren().size() == 0) return op;
+      for(Iterator<Operator<? extends  OperatorDesc>> it = op.getChildOperators().iterator(); it.hasNext();) {
+        Operator<? extends OperatorDesc> child = it.next();
+        if(!set.contains(child)) {
+            queue.add(child);
+            set.add(child);
+        }
+      }
+    }
+    return null;
+  }
+
+  void showOperator(Operator<? extends OperatorDesc> op, int dep) {
+    StringBuilder builder = new StringBuilder("AXE INFO: Operator ");
+    for(int i = 0; i < dep; ++i) builder.append(' ');
+    builder.append(op.getName());
+    LOG.info(builder.toString());
+    for(Iterator<Operator<? extends OperatorDesc>> it = op.getParentOperators().iterator(); it.hasNext();) {
+      showOperator(it.next(), dep + 1);
+    }
+  }
+
+  // Show operator from down to top
+  void showAllOperator() {
+      if(topOps.size() > 0) {
+          TableScanOperator op = topOps.values().iterator().next();
+          Operator<? extends OperatorDesc> sink = findSink(op);
+          showOperator(sink, 0);
+      }
+      else {
+        LOG.info("AXE INFO(ERROR): topOps size is 0");
+      }
+
   }
 
   private void putAccessedColumnsToReadEntity(HashSet<ReadEntity> inputs, ColumnAccessInfo columnAccessInfo) {
