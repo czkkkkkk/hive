@@ -112,6 +112,20 @@ public class TableScanDesc extends AbstractOperatorDesc {
 
   private int numBuckets = -1;
 
+  @Override
+  public String toString() {
+      StringBuilder builder = new StringBuilder("\n");
+      builder.append("TableScanDesc:\n");
+      builder.append("  tableName:" + tableMetadata.getTableName() + "\n");
+      builder.append("  alias:" + alias + "\n");
+      builder.append("  tableSchema:" + tableMetadata.getAllCols());
+      builder.append("  tableType:" + tableMetadata.getTableType() + "\n");
+      builder.append("  needed cols:" + getNeededColumnIDs() + "\n");
+      builder.append("  table path:" + tableMetadata.getPath() + "\n");
+      return builder.toString();
+
+  }
+
   public TableScanDesc() {
     this(null, null);
   }
