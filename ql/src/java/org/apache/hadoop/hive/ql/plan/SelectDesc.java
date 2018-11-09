@@ -38,6 +38,13 @@ public class SelectDesc extends AbstractOperatorDesc {
   private boolean selectStar;
   private boolean selStarNoCompute;
 
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("\n");
+    builder.append("SelectDesc:\n");
+    builder.append("  colList:" + colList.toString());
+    return builder.toString();
+  }
   public SelectDesc() {
   }
 
