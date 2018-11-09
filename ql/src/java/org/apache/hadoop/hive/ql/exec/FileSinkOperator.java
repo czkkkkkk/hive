@@ -94,7 +94,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   public static final Logger LOG = LoggerFactory.getLogger(FileSinkOperator.class);
   private static final boolean isInfoEnabled = LOG.isInfoEnabled();
   private static final boolean isDebugEnabled = LOG.isDebugEnabled();
-
+  
   protected transient HashMap<String, FSPaths> valToPaths;
   protected transient int numDynParts;
   protected transient List<String> dpColNames;
@@ -303,7 +303,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   Class<? extends Writable> outputClass;
   String taskId;
 
+
   protected boolean filesCreated = false;
+
 
   private void initializeSpecPath() {
     // For a query of the type:
@@ -500,12 +502,12 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
     this.maxPartitions = dpCtx.getMaxPartitionsPerNode();
 
     assert numDynParts == dpColNames.size()
-        : "number of dynamic partitions should be the same as the size of DP mapping";
+            : "number of dynamic partitions should be the same as the size of DP mapping";
 
     if (dpColNames != null && dpColNames.size() > 0) {
       this.bDynParts = true;
       assert inputObjInspectors.length == 1 : "FileSinkOperator should have 1 parent, but it has "
-          + inputObjInspectors.length;
+              + inputObjInspectors.length;
       StructObjectInspector soi = (StructObjectInspector) inputObjInspectors[0];
       this.dpStartCol = Utilities.getDPColOffset(conf);
       this.subSetOI = new SubStructObjectInspector(soi, 0, this.dpStartCol);
