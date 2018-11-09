@@ -11261,6 +11261,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
     LOG.info("AXE INFO: Before translate to target execution engin");
+    LOG.info("AXE INFO: Compiling cmd:" + ctx.getCmd());
     showTableScanOperators();
     showAllOperator();
     // 9. Optimize Physical op tree & Translate to tarfget execution engine (MR,
@@ -11319,7 +11320,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
   void showOperator(Operator<? extends OperatorDesc> op, int dep) {
     StringBuilder builder = new StringBuilder("AXE INFO: Operator ");
     for(int i = 0; i < dep; ++i) builder.append(' ');
-    builder.append(op.getName());
+    builder.append(op.getClass());
+    builder.append(op.getConf().toString());
     LOG.info(builder.toString());
     for(Iterator<Operator<? extends OperatorDesc>> it = op.getParentOperators().iterator(); it.hasNext();) {
       showOperator(it.next(), dep + 1);

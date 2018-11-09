@@ -89,6 +89,17 @@ public class FilterDesc extends AbstractOperatorDesc {
   private boolean isSortedFilter;
   private transient boolean isGenerated;
 
+  // TODO(czk) Check the predicate info in TPC-H
+  @Override
+  public String toString() {
+      StringBuilder builder = new StringBuilder("\n");
+      builder.append("FilterDesc:\n");
+      builder.append("  predicate:" + predicate.getExprString() + "\n");
+      builder.append("  predicate expr type:" + predicate.getTypeString() + "\n");
+      builder.append("  predicate expr class:" + predicate.getClass() + "\n");
+      builder.append("  predicate to string:" + predicate.toString() + "\n");
+      return builder.toString();
+  }
   public FilterDesc() {
   }
 
