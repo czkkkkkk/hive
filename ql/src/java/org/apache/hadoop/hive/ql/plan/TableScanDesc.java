@@ -118,7 +118,9 @@ public class TableScanDesc extends AbstractOperatorDesc {
       builder.append("TableScanDesc:\n");
       builder.append("  tableName:" + tableMetadata.getTableName() + "\n");
       builder.append("  alias:" + alias + "\n");
-      builder.append("  tableSchema:" + tableMetadata.getAllCols());
+      builder.append("  tableSchema:" + tableMetadata.getAllCols() + "\n");
+      builder.append("  inputFormat:" + tableMetadata.getInputFormatClass().getName() + "\n");
+      builder.append("  outputFormat:" + tableMetadata.getOutputFormatClass().getName() + "\n");
       builder.append("  tableType:" + tableMetadata.getTableType() + "\n");
       builder.append("  needed cols:" + getNeededColumnIDs() + "\n");
       builder.append("  table path:" + tableMetadata.getPath() + "\n");
