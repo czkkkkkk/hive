@@ -106,6 +106,24 @@ public class FileSinkDesc extends AbstractOperatorDesc {
   public FileSinkDesc() {
   }
 
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("\n");
+    builder.append("FileSinkDesc:\n");
+    builder.append("  NumFiles " + numFiles + "\n");
+    builder.append("  DirName " + getDirName().toString() + "\n");
+    builder.append("  OutputFormat = " + getTableInfo().getOutputFileFormatClassName() + "\n");
+    if(getTableInfo() != null && getTableInfo().getProperties() != null) {
+      for (String key : getTableInfo().getProperties().stringPropertyNames()) {
+        if(key == "columns.types" || key ==  "columns") {
+          builder.append("  " + key + " = " + getTableInfo().getProperties().getProperty(key) + "\n");
+        }
+      }
+    }
+    return builder.toString();
+
+  }
+
   /**
    * @param destPath - the final destination for data
    */
