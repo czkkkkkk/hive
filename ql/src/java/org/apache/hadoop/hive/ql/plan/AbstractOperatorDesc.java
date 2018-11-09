@@ -47,7 +47,7 @@ public class AbstractOperatorDesc implements OperatorDesc {
    * @return string view of operator description
    */
   public String toString() {
-    return "AbstractOperatorDesc";
+    return "\nAbstractOperatorDesc\n";
   }
 
   @Override
