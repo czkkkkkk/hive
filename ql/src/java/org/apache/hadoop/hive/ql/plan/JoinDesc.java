@@ -107,6 +107,16 @@ public class JoinDesc extends AbstractOperatorDesc {
   private transient boolean leftInputJoin;
   private transient List<String> streamAliases;
 
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("\n");
+    builder.append("JoinDesc:\n");
+    builder.append("  exprs: " + exprs + "\n");
+    builder.append("  filters: " + filters + "\n");
+    builder.append("  Output Column Names: " + outputColumnNames + "\n");
+    return builder.toString();
+  }
+
   public JoinDesc() {
   }
 

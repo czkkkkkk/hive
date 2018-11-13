@@ -129,6 +129,17 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
 
   private static transient Logger LOG = LoggerFactory.getLogger(ReduceSinkDesc.class);
 
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("\n");
+    builder.append("ReduceSinkDesc:\n");
+    builder.append("  keyCols: " + keyCols + "\n");
+    builder.append("  outputKeyColumnNames: " + outputKeyColumnNames + "\n");
+    builder.append("  valueCols: " + valueCols + "\n");
+    builder.append("  outputValueColumnNames: " + outputValueColumnNames + "\n");
+    return builder.toString();
+  }
+
   public ReduceSinkDesc() {
   }
 
