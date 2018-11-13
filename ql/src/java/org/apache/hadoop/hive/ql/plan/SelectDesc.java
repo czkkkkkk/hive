@@ -42,7 +42,7 @@ public class SelectDesc extends AbstractOperatorDesc {
   public String toString() {
     StringBuilder builder = new StringBuilder("\n");
     builder.append("SelectDesc:\n");
-    builder.append("  colList:" + colList.toString());
+    builder.append("  colList:" + colList.toString() + "\n");
     return builder.toString();
   }
   public SelectDesc() {
