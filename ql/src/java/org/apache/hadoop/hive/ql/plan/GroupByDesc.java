@@ -76,6 +76,17 @@ public class GroupByDesc extends AbstractOperatorDesc {
   transient private boolean isDistinct;
   private boolean dontResetAggrsDistinct;
 
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("\n");
+    builder.append("GroupByDesc:\n");  
+    builder.append("keys: " + getUserLevelExplainKeyString() + "\n");
+    builder.append("list grouping sets: " + listGroupingSets.toString() + "\n");
+    builder.append("aggregators: " + getAggregatorStrings().toString() + "\n");
+    builder.append("output column names: " + outputColumnNames.toString() + "\n");
+    return builder.toString();
+  }
+
   public GroupByDesc() {
     vectorDesc = new VectorGroupByDesc();
   }
@@ -125,6 +136,7 @@ public class GroupByDesc extends AbstractOperatorDesc {
   public Mode getMode() {
     return mode;
   }
+
 
   @Explain(displayName = "mode")
   public String getModeString() {
