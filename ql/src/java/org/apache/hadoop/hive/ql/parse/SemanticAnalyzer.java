@@ -11272,6 +11272,11 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       compiler.compile(pCtx, rootTasks, inputs, outputs);
       fetchTask = pCtx.getFetchTask();
     }
+    else if(HiveConf.getVar(conf, HiveConf.ConfVars.HIVE_EXECUTION_ENGINE).equals("axe")) {
+      TaskCompiler compiler = TaskCompilerFactory.getCompiler(conf, pCtx);
+      compiler.init(queryState, console, db);
+      compiler.compile(pCtx, rootTasks, inputs, outputs);
+    }
     LOG.info("Completed plan generation");
 
     // 10. put accessed columns to readEntity
