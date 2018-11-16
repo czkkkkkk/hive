@@ -1,8 +1,8 @@
 package org.apache.hadoop.hive.ql.parse.axe;
 
-public class AXETableDesc {
+public class AXETable {
     String name;
-    public AXETableDesc(String tableName) {
+    public AXETable(String tableName) {
         name = tableName;
     }
 }
