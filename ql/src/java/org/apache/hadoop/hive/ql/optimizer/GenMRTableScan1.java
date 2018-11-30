@@ -36,6 +36,7 @@ import org.apache.hadoop.hive.ql.exec.mr.MapRedTask;
 import org.apache.hadoop.hive.ql.io.orc.OrcInputFormat;
 import org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat;
 import org.apache.hadoop.hive.ql.io.rcfile.stats.PartialScanWork;
+import org.apache.hadoop.hive.ql.lib.DefaultGraphWalker;
 import org.apache.hadoop.hive.ql.lib.Node;
 import org.apache.hadoop.hive.ql.lib.NodeProcessor;
 import org.apache.hadoop.hive.ql.lib.NodeProcessorCtx;
@@ -49,7 +50,10 @@ import org.apache.hadoop.hive.ql.plan.MapredWork;
 import org.apache.hadoop.hive.ql.plan.OperatorDesc;
 import org.apache.hadoop.hive.ql.plan.StatsNoJobWork;
 import org.apache.hadoop.hive.ql.plan.StatsWork;
+import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.mapred.InputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processor for the rule - table scan.
@@ -57,6 +61,9 @@ import org.apache.hadoop.mapred.InputFormat;
 public class GenMRTableScan1 implements NodeProcessor {
   public GenMRTableScan1() {
   }
+
+  static final Logger LOG = LoggerFactory.getLogger(GenMRTableScan1.class.getName());
+  static final SessionState.LogHelper console = new SessionState.LogHelper(LOG);
 
   /**
    * Table Sink encountered.
@@ -68,6 +75,7 @@ public class GenMRTableScan1 implements NodeProcessor {
   @Override
   public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx opProcCtx,
       Object... nodeOutputs) throws SemanticException {
+    LOG.info("AXE INFO: Gen MapReduce TS processing");
     TableScanOperator op = (TableScanOperator) nd;
     GenMRProcContext ctx = (GenMRProcContext) opProcCtx;
     ParseContext parseCtx = ctx.getParseCtx();
@@ -82,7 +90,9 @@ public class GenMRTableScan1 implements NodeProcessor {
     ctx.setCurrTopOp(op);
 
     for (String alias : parseCtx.getTopOps().keySet()) {
+      LOG.info("AXE INFO: operator alias = " + alias);
       Operator<? extends OperatorDesc> currOp = parseCtx.getTopOps().get(alias);
+      LOG.info("AXE INFO: current operator name = " + currOp.getName());
       if (currOp == op) {
         String currAliasId = alias;
         ctx.setCurrAliasId(currAliasId);
@@ -123,6 +133,7 @@ public class GenMRTableScan1 implements NodeProcessor {
 
             StatsWork statsWork = new StatsWork(op.getConf().getTableMetadata().getTableSpec());
             statsWork.setAggKey(op.getConf().getStatsAggPrefix());
+            LOG.info("AXE INFO: StatsAggPrefix = " + op.getConf().getStatsAggPrefix());
             statsWork.setStatsTmpDir(op.getConf().getTmpStatsDir());
             statsWork.setSourceTask(currTask);
             statsWork.setStatsReliable(parseCtx.getConf().getBoolVar(
@@ -181,7 +192,7 @@ public class GenMRTableScan1 implements NodeProcessor {
    * @param ctx
    * @param parseCtx
    * @param currTask
-   * @param parseInfo
+   //* @param parseInfo
    * @param statsWork
    * @param statsTask
    * @throws SemanticException

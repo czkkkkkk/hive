@@ -74,6 +74,11 @@ public class FilterOperator extends Operator<FilterDesc> implements
 
   @Override
   public void process(Object row, int tag) throws HiveException {
+    LOG.info("AXE INFO: Filter Operator processing");
+    //for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+    //  LOG.info("AXE INFO: " + ste.getClassName());
+   // }
+    
     ObjectInspector rowInspector = inputObjInspectors[tag];
     if (conditionInspector == null) {
       conditionInspector = (PrimitiveObjectInspector) conditionEvaluator

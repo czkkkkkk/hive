@@ -66,6 +66,8 @@ public class GenMRFileSink1 implements NodeProcessor {
   @Override
   public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx opProcCtx,
       Object... nodeOutputs) throws SemanticException {
+    LOG.info("AXE INFO: Gen MapReduce FS processing");
+
     GenMRProcContext ctx = (GenMRProcContext) opProcCtx;
     ParseContext parseCtx = ctx.getParseCtx();
     boolean chDir = false;
@@ -73,6 +75,14 @@ public class GenMRFileSink1 implements NodeProcessor {
     FileSinkOperator fsOp = (FileSinkOperator) nd;
     Map<Operator<? extends OperatorDesc>, GenMapRedCtx> mapCurrCtx = ctx
         .getMapCurrCtx();
+    if(mapCurrCtx != null) {
+      for (Map.Entry<Operator<? extends OperatorDesc>, GenMapRedCtx> e : mapCurrCtx.entrySet()) {
+        LOG.info("AXE INFO: " + e.getKey().toString());
+        LOG.info("AXE INFO: " + e.getKey().getConf().toString());
+        LOG.info("AXE INFO: " + e.getValue().getCurrAliasId() + " " + e.getValue().getCurrTask().toString());
+      }
+    }
+
     GenMapRedCtx mapredCtx = mapCurrCtx.get(fsOp.getParentOperators().get(0));
     Task<? extends Serializable> currTask = mapredCtx.getCurrTask();
     

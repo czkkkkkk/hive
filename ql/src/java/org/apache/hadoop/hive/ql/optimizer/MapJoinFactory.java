@@ -39,6 +39,8 @@ import org.apache.hadoop.hive.ql.plan.MapWork;
 import org.apache.hadoop.hive.ql.plan.MapredLocalWork;
 import org.apache.hadoop.hive.ql.plan.MapredWork;
 import org.apache.hadoop.hive.ql.plan.OperatorDesc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Operator factory for MapJoin processing.
@@ -78,6 +80,8 @@ public final class MapJoinFactory {
    * is enhanced to contain the bucketing info. when it is encountered.
    */
   private static class TableScanMapJoinProcessor implements NodeProcessor {
+
+    static final Logger LOG = LoggerFactory.getLogger(TableScanMapJoinProcessor.class.getName());
 
     public static void setupBucketMapJoinInfo(MapWork plan,
         AbstractMapJoinOperator<? extends MapJoinDesc> currMapJoinOp) {
@@ -190,6 +194,7 @@ public final class MapJoinFactory {
     @Override
     public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx procCtx,
         Object... nodeOutputs) throws SemanticException {
+      LOG.info("AXE INFO: Gen MapReduce Map Join processing");
       AbstractMapJoinOperator<MapJoinDesc> mapJoin = (AbstractMapJoinOperator<MapJoinDesc>) nd;
       GenMRProcContext ctx = (GenMRProcContext) procCtx;
 

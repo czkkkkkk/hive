@@ -35,6 +35,8 @@ import org.apache.hadoop.hive.ql.optimizer.GenMRProcContext.GenMapRedCtx;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.MapredWork;
 import org.apache.hadoop.hive.ql.plan.OperatorDesc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processor for the rule - union followed by reduce sink.
@@ -43,6 +45,8 @@ public class GenMRRedSink3 implements NodeProcessor {
 
   public GenMRRedSink3() {
   }
+
+  static final Logger LOG = LoggerFactory.getLogger(GenMRRedSink3.class.getName());
 
   /**
    * Reduce Scan encountered.
@@ -57,6 +61,7 @@ public class GenMRRedSink3 implements NodeProcessor {
     ReduceSinkOperator op = (ReduceSinkOperator) nd;
     GenMRProcContext ctx = (GenMRProcContext) opProcCtx;
 
+    LOG.info("AXE INFO: Gen MapReduce RS3 processing");
     // union consisted on a bunch of map-reduce jobs, and it has been split at
     // the union
     Operator<? extends OperatorDesc> reducer = op.getChildOperators().get(0);
