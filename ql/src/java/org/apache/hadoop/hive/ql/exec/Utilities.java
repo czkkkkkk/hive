@@ -3681,6 +3681,7 @@ public final class Utilities {
       TableScanOperator tableScanOp) {
     String colNames = MetaStoreUtils.getColumnNamesFromFieldSchema(table.getSd().getCols());
     String colTypes = MetaStoreUtils.getColumnTypesFromFieldSchema(table.getSd().getCols());
+    LOG.info("AXE INFO: Schema Evolution : " + colNames + " " + colTypes);
     tableScanOp.setSchemaEvolution(colNames, colTypes);
   }
 

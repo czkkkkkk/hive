@@ -23,11 +23,17 @@ import java.util.List;
 import org.apache.hadoop.hive.ql.lib.DefaultGraphWalker;
 import org.apache.hadoop.hive.ql.lib.Dispatcher;
 import org.apache.hadoop.hive.ql.lib.Node;
+import org.apache.hadoop.hive.ql.session.SessionState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Walks the operator tree in pre order fashion.
  */
 public class GenMapRedWalker extends DefaultGraphWalker {
+
+  static final Logger LOG = LoggerFactory.getLogger(GenMapRedWalker.class.getName());
+  static final SessionState.LogHelper console = new SessionState.LogHelper(LOG);
 
   /**
    * constructor of the walker - the dispatcher is passed.
@@ -48,11 +54,9 @@ public class GenMapRedWalker extends DefaultGraphWalker {
   @Override
   protected void walk(Node nd) throws SemanticException {
     List<? extends Node> children = nd.getChildren();
-
     // maintain the stack of operators encountered
     opStack.push(nd);
     Boolean result = dispatchAndReturn(nd, opStack);
-
     // kids of reduce sink operator or mapjoin operators merged into root task
     // need not be traversed again
     if (children == null || result == Boolean.FALSE) {

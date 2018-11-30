@@ -147,6 +147,7 @@ public final class GenMapRedUtils {
   public static void initPlan(ReduceSinkOperator op, GenMRProcContext opProcCtx)
       throws SemanticException {
     Operator<? extends OperatorDesc> reducer = op.getChildOperators().get(0);
+    LOG.info("AXE INFO: reducer " + reducer.getConf().toString());
     Map<Operator<? extends OperatorDesc>, GenMapRedCtx> mapCurrCtx =
         opProcCtx.getMapCurrCtx();
     GenMapRedCtx mapredCtx = mapCurrCtx.get(op.getParentOperators().get(0));
@@ -474,13 +475,13 @@ public final class GenMapRedUtils {
    *
    * @param alias_id
    *          current alias
-   * @param topOp
+   * @param tsOp
    *          the top operator of the stack
    * @param plan
    *          map work to initialize
    * @param local
    *          whether you need to add to map-reduce or local work
-   * @param pList
+   * @param partsList
    *          pruned partition list. If it is null it will be computed on-the-fly.
    * @param inputs
    *          read entities for the map work
@@ -490,6 +491,7 @@ public final class GenMapRedUtils {
   public static void setMapWork(MapWork plan, ParseContext parseCtx, Set<ReadEntity> inputs,
       PrunedPartitionList partsList, TableScanOperator tsOp, String alias_id,
       HiveConf conf, boolean local) throws SemanticException {
+    LOG.info("AXE INFO :  setting Map Work");
     ArrayList<Path> partDir = new ArrayList<Path>();
     ArrayList<PartitionDesc> partDesc = new ArrayList<PartitionDesc>();
     boolean isAcidTable = false;
@@ -528,10 +530,19 @@ public final class GenMapRedUtils {
 
     Map<String, String> props = tsOp.getConf().getOpProps();
     if (props != null) {
+      for(Entry<String, String> x : props.entrySet()) {
+        LOG.info("AXE INFO:  props " + x.getKey() + " " + x.getValue());
+      }
       Properties target = aliasPartnDesc.getProperties();
       target.putAll(props);
     }
 
+    LOG.info("AXE INFO: alias Partn Desc " + aliasPartnDesc.getTableDesc().toString() + '\n'
+            + aliasPartnDesc.getProperties().toString());
+    if(aliasPartnDesc.getPartSpec() != null)
+      for(Entry<String, String> e : aliasPartnDesc.getPartSpec().entrySet()) {
+        LOG.info("AXE INFO: alias Partt Desce , " + e.getKey() + " "  + e.getValue());
+      }
     plan.getAliasToPartnInfo().put(alias_id, aliasPartnDesc);
 
     long sizeNeeded = Integer.MAX_VALUE;
@@ -575,6 +586,14 @@ public final class GenMapRedUtils {
     Map<String, ReadEntity> viewToInput = parseCtx.getViewAliasToInput();
     ReadEntity parentViewInfo = PlanUtils.getParentViewInfo(alias_id, viewToInput);
 
+    if(viewToInput != null) {
+      for (Entry<String, ReadEntity> e : viewToInput.entrySet()) {
+        LOG.info("AXE INFO: viewToInput: " + e.getKey() + " " + e.getValue().toString());
+      }
+    }
+    if(parentViewInfo != null) {
+      LOG.info("AXE INFO: parentViewInfo: " + parentViewInfo.toString());
+    }
     // The table should also be considered a part of inputs, even if the table is a
     // partitioned table and whether any partition is selected or not
 
@@ -675,6 +694,7 @@ public final class GenMapRedUtils {
           continue;
         }
         String path = p.toString();
+        LOG.info("Adding " + path + " of table" + alias_id);
         if (LOG.isDebugEnabled()) {
           LOG.debug("Adding " + path + " of table" + alias_id);
         }

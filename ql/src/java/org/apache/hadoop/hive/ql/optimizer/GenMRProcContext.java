@@ -176,7 +176,7 @@ public class GenMRProcContext implements NodeProcessorCtx {
    *          hive configuration
    * @param opTaskMap
    *          reducer to task mapping
-   * @param seenOps
+   * //@param seenOps
    *          operator already visited
    * @param parseCtx
    *          current parse context

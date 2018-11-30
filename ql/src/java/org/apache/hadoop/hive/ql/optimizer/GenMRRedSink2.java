@@ -31,6 +31,9 @@ import org.apache.hadoop.hive.ql.lib.NodeProcessorCtx;
 import org.apache.hadoop.hive.ql.optimizer.GenMRProcContext.GenMapRedCtx;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.OperatorDesc;
+import org.apache.hadoop.hive.ql.session.SessionState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processor for the rule - reduce sink followed by reduce sink.
@@ -39,6 +42,9 @@ public class GenMRRedSink2 implements NodeProcessor {
 
   public GenMRRedSink2() {
   }
+
+  static final Logger LOG = LoggerFactory.getLogger(GenMRRedSink2.class.getName());
+  static final SessionState.LogHelper console = new SessionState.LogHelper(LOG);
 
   /**
    * Reduce Scan encountered.
@@ -50,6 +56,8 @@ public class GenMRRedSink2 implements NodeProcessor {
    */
   public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx opProcCtx,
       Object... nodeOutputs) throws SemanticException {
+    LOG.info("AXE INFO: Gen MapReduce RS2 processing");
+
     ReduceSinkOperator op = (ReduceSinkOperator) nd;
     GenMRProcContext ctx = (GenMRProcContext) opProcCtx;
 

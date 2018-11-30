@@ -139,14 +139,14 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
     builder.append("  outputValueColumnNames: " + outputValueColumnNames + "\n");
     builder.append("  DistinctColumnIndices: " + distinctColumnIndices.toString() + "\n");
     builder.append("  numBuckets: " + numBuckets + "\n");
-    if(bucketCols != null)
+      if(bucketCols != null)
       builder.append("  Buckets: " + PlanUtils.getExprListString(bucketCols) + "\n");
     builder.append("  numDistributionKeys: " + numDistributionKeys + "\n");
     if(partitionCols != null)
       builder.append("  partitionCols: " + PlanUtils.getExprListString(partitionCols) + "\n");
     if(outputOperators != null)
       builder.append("  outputOperators: " + outputOperators.toString() + "\n");
-    builder.append("  NumReducer: " + numReducers);
+    builder.append("  NumReducer: " + numReducers + "\n");
     return builder.toString();
   }
 

@@ -39,6 +39,7 @@ import org.apache.hadoop.hive.ql.io.AcidUtils;
 import org.apache.hadoop.hive.ql.io.RecordIdentifier;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.VirtualColumn;
+import org.apache.hadoop.hive.ql.optimizer.GenMRRedSink1;
 import org.apache.hadoop.hive.ql.plan.MapWork;
 import org.apache.hadoop.hive.ql.plan.OperatorDesc;
 import org.apache.hadoop.hive.ql.plan.PartitionDesc;
@@ -64,6 +65,8 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.util.StringUtils;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Map operator. This triggers overall map side processing. This is a little
@@ -90,6 +93,8 @@ public class MapOperator extends AbstractMapOperator {
 
   protected static class MapOpCtx {
 
+    static final Logger LOG = LoggerFactory.getLogger(MapOpCtx.class.getName());
+
     final String alias;
     final Operator<?> op;
     final PartitionDesc partDesc;
@@ -109,10 +114,21 @@ public class MapOperator extends AbstractMapOperator {
     List<VirtualColumn> vcs;
     Object[] vcValues;
 
+    public Operator<?> getOp() {
+      return op;
+    }
+
     public MapOpCtx(String alias, Operator<?> op, PartitionDesc partDesc) {
       this.alias = alias;
       this.op = op;
       this.partDesc = partDesc;
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("AXE INFO: \n");
+      return builder.toString();
     }
 
     private boolean isPartitioned() {
@@ -541,6 +557,7 @@ public class MapOperator extends AbstractMapOperator {
     }
     int childrenDone = 0;
     for (MapOpCtx current : currentCtxs) {
+      LOG.info("AXE INFO: MAP operator: " + current.getOp().toString());
       Object row = null;
       try {
         row = current.readRow(value, context);

@@ -43,6 +43,8 @@ import org.apache.hadoop.hive.ql.plan.MapredWork;
 import org.apache.hadoop.hive.ql.plan.OperatorDesc;
 import org.apache.hadoop.hive.ql.plan.PlanUtils;
 import org.apache.hadoop.hive.ql.plan.TableDesc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processor for the rule - TableScan followed by Union.
@@ -52,6 +54,8 @@ public class GenMRUnion1 implements NodeProcessor {
   public GenMRUnion1() {
   }
 
+  static final Logger LOG = LoggerFactory.getLogger(GenMRUnion1.class.getName());
+
   /**
    * Process the union if all sub-queries are map-only
    *
@@ -60,6 +64,7 @@ public class GenMRUnion1 implements NodeProcessor {
    */
   private Object processMapOnlyUnion(UnionOperator union, Stack<Node> stack,
       GenMRProcContext ctx, UnionProcContext uCtx) throws SemanticException {
+    LOG.info("AXE INFO: Gen MapReduce Union1 processing");
 
     // merge currTask from multiple topOps
     GenMRUnionCtx uCtxTask = ctx.getUnionTask(union);

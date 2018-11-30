@@ -28,7 +28,11 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.hadoop.hive.ql.exec.FetchOperator;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
+import org.apache.hadoop.hive.ql.session.SessionState.LogHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * base class for operator graph walker this class takes list of starting ops
@@ -38,6 +42,8 @@ import org.apache.hadoop.hive.ql.parse.SemanticException;
  */
 public class DefaultGraphWalker implements GraphWalker {
 
+  static final Logger LOG = LoggerFactory.getLogger(DefaultGraphWalker.class.getName());
+  static final LogHelper console = new LogHelper(LOG);
   /**
    * opStack keeps the nodes that have been visited, but have not been
    * dispatched yet
@@ -114,6 +120,7 @@ public class DefaultGraphWalker implements GraphWalker {
    */
   public void startWalking(Collection<Node> startNodes,
       HashMap<Node, Object> nodeOutput) throws SemanticException {
+
     toWalk.addAll(startNodes);
     while (toWalk.size() > 0) {
       Node nd = toWalk.remove(0);

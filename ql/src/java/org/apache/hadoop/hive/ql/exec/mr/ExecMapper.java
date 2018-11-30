@@ -60,6 +60,8 @@ import org.apache.hadoop.util.StringUtils;
  */
 public class ExecMapper extends MapReduceBase implements Mapper {
 
+  static final Logger LOG = LoggerFactory.getLogger(ExecMapper.class.getName());
+
   private AbstractMapOperator mo;
   private OutputCollector oc;
   private JobConf jc;
@@ -151,12 +153,15 @@ public class ExecMapper extends MapReduceBase implements Mapper {
     // reset the execContext for each new row
     execContext.resetRow();
 
+
     try {
       if (mo.getDone()) {
         done = true;
       } else {
         // Since there is no concept of a group, we don't invoke
         // startGroup/endGroup for a mapper
+        LOG.info("AXE INFO:  MAP : key = " + key.getClass().getName() + ", value = " + value.toString());
+        
         mo.process((Writable)value);
       }
     } catch (Throwable e) {

@@ -32,6 +32,9 @@ import org.apache.hadoop.hive.ql.optimizer.GenMRProcContext.GenMapRedCtx;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.MapredWork;
 import org.apache.hadoop.hive.ql.plan.OperatorDesc;
+import org.apache.hadoop.hive.ql.session.SessionState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processor for the rule - table scan followed by reduce sink.
@@ -40,6 +43,8 @@ public class GenMRRedSink1 implements NodeProcessor {
 
   public GenMRRedSink1() {
   }
+
+  static final Logger LOG = LoggerFactory.getLogger(GenMRRedSink1.class.getName());
 
   /**
    * Reduce Sink encountered.
@@ -55,11 +60,20 @@ public class GenMRRedSink1 implements NodeProcessor {
    */
   public Object process(Node nd, Stack<Node> stack, NodeProcessorCtx opProcCtx,
       Object... nodeOutputs) throws SemanticException {
+    LOG.info("AXE INFO: Gen MapReduce RS1 processing");
+
     ReduceSinkOperator op = (ReduceSinkOperator) nd;
     GenMRProcContext ctx = (GenMRProcContext) opProcCtx;
 
     Map<Operator<? extends OperatorDesc>, GenMapRedCtx> mapCurrCtx = ctx
         .getMapCurrCtx();
+    if(mapCurrCtx != null) {
+      for (Map.Entry<Operator<? extends OperatorDesc>, GenMapRedCtx> e : mapCurrCtx.entrySet()) {
+        LOG.info("AXE INFO: " + e.getKey().toString());
+        LOG.info("AXE INFO: " + e.getKey().getConf().toString());
+        LOG.info("AXE INFO: " + e.getValue().getCurrAliasId() + " " + e.getValue().getCurrTask().toString());
+      }
+    }
     GenMapRedCtx mapredCtx = mapCurrCtx.get(stack.get(stack.size() - 2));
     Task<? extends Serializable> currTask = mapredCtx.getCurrTask();
     MapredWork currPlan = (MapredWork) currTask.getWork();
@@ -70,6 +84,7 @@ public class GenMRRedSink1 implements NodeProcessor {
           "But found multiple children : " + op.getChildOperators());
     }
     Operator<? extends OperatorDesc> reducer = op.getChildOperators().get(0);
+    LOG.info("AXE INFO: reducer operator : " + reducer.getConf().toString());
     Task<? extends Serializable> oldTask = ctx.getOpTaskMap().get(reducer);
 
     ctx.setCurrAliasId(currAliasId);

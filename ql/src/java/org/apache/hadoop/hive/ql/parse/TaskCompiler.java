@@ -144,13 +144,19 @@ public abstract class TaskCompiler {
      * If the select is from analyze table column rewrite, don't create a fetch task. Instead create
      * a column stats task later.
      */
+    LOG.info(new StringBuilder().append("AXE  is query: ").append(pCtx.getQueryProperties().isQuery()).toString());
+    LOG.info(new StringBuilder().append("AXE  is CStats: ").append(isCStats).toString());
     if (pCtx.getQueryProperties().isQuery() && !isCStats) {
       if ((!loadTableWork.isEmpty()) || (loadFileWork.size() != 1)) {
         throw new SemanticException(ErrorMsg.INVALID_LOAD_TABLE_FILE_WORK.getMsg());
       }
 
       LoadFileDesc loadFileDesc = loadFileWork.get(0);
-
+      LOG.info("AXE  loadFileDesc.columns: " + loadFileDesc.getColumns());
+      LOG.info("AXE  loadFileDesc.sourcePath: " + loadFileDesc.getSourcePath().toString());
+      LOG.info("AXE  loadFileDesc.coulumntypes: " + loadFileDesc.getColumnTypes());
+      LOG.info("AXE  loadFileDesc.getTargetDir: " + loadFileDesc.getTargetDir().toString());
+      LOG.info("AXE  loadFileDesc.getDestinationCreateTable: " + loadFileDesc.getDestinationCreateTable());
       String cols = loadFileDesc.getColumns();
       String colTypes = loadFileDesc.getColumnTypes();
 
@@ -283,9 +289,10 @@ public abstract class TaskCompiler {
       GenMapRedUtils.setKeyAndValueDescForTaskTree(rootTask);
     }
 
-    // If a task contains an operator which instructs bucketizedhiveinputformat
+    // If a task contains an operator which instructs bucketized hive inputformat
     // to be used, please do so
     for (Task<? extends Serializable> rootTask : rootTasks) {
+      LOG.info("AXE INFO: rootTasks: " + rootTask.toString());
       setInputFormat(rootTask);
     }
 
@@ -412,9 +419,9 @@ public abstract class TaskCompiler {
    * appropriate metadata to be used during execution.
    *
    * @param analyzeRewrite
-   * @param loadTableWork
+   * //@param loadTableWork
    * @param loadFileWork
-   * @param rootTasks
+   * @param leafTasks
    * @param outerQueryLimit
    */
   @SuppressWarnings("unchecked")

@@ -891,6 +891,7 @@ public abstract class Operator<T extends OperatorDesc> implements Serializable,C
     int childrenDone = 0;
     for (int i = 0; i < childOperatorsArray.length; i++) {
       Operator<? extends OperatorDesc> o = childOperatorsArray[i];
+      LOG.info("AXE INFO: forward " + o.toString());
       if (o.getDone()) {
         childrenDone++;
       } else {

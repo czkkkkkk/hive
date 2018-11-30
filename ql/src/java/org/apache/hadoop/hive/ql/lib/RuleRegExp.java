@@ -28,12 +28,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.hadoop.hive.ql.parse.SemanticException;
+import org.apache.hadoop.hive.ql.session.SessionState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Rule interface for Nodes Used in Node dispatching to dispatch process/visitor
  * functions for Nodes.
  */
 public class RuleRegExp implements Rule {
+
+  static final Logger LOG = LoggerFactory.getLogger(RuleRegExp.class.getName());
+  static final SessionState.LogHelper console = new SessionState.LogHelper(LOG);
 
   private final String ruleName;
   private final Pattern patternWithWildCardChar;
